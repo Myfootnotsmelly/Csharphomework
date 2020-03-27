@@ -149,7 +149,7 @@ namespace Homework5
                 UI.deleteOrderUI(shopgoods, obj);
             }
             Console.WriteLine("删除成功！");
-            Console.Read();
+            Console.ReadKey();
             Console.Clear();
             UI.startMenu(shopgoods, obj);
         }
