@@ -7,18 +7,21 @@ using System.Threading.Tasks;
 namespace Homework5
 {
     //货物类 
-    enum goodstype: int
+    [Serializable]
+    public enum goodstype: int
         {
             wine,gun,fish
         }
-    class Goods
+    [Serializable]
+    public class Goods
     {
-        private goodstype type;
-        private double price;
+        public goodstype type;
+        public double price;
 
         public goodstype Type { get { return type; } }
         public double Price { get { return price; } }
 
+        public Goods() { }
         public Goods(goodstype type,double price)
         {
             this.type = type;
@@ -27,6 +30,11 @@ namespace Homework5
         public override string ToString()
         {
             return Type+"";
+        }
+        public override bool Equals(object obj)
+        {
+            Goods m = obj as Goods;
+            return m != null && m.type == type;
         }
     }
 }

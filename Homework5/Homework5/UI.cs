@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace Homework5
 {
@@ -12,18 +14,21 @@ namespace Homework5
     {
         public static void startMenu(List<Goods> shopgoods,OrderService obj)
         {
-      start:Console.WriteLine("--订单管理程序--");
+           do
+            {
+                Console.Clear();
+            Console.WriteLine("--订单管理程序--");
             Console.WriteLine("按提示选择你想进行的操作：");
             Console.WriteLine("1.添加订单");
             Console.WriteLine("2.修改订单");
             Console.WriteLine("3.删除订单");
             Console.WriteLine("4.查询订单");
+            Console.WriteLine("5.将已有订单序列化为XML格式");
+            Console.WriteLine("6.将xml文件导入到订单");
             Console.WriteLine("请输入：");
             char op;
             char.TryParse(Console.ReadLine(), out op);
-            bool flag=true;
-            do
-            {
+           
                 switch (op)
                 {
                     case '1':
@@ -38,21 +43,37 @@ namespace Homework5
                     case '4':
                         UI.inquiryOrderUI(shopgoods, obj);
                         break;
+                    case '5':
+                        obj.Export();
+                        Console.WriteLine("已导出xml文件\n");
+                        Console.ReadKey();
+                        break;
+                    case '6':
+                        Console.Write("请输入您想导入的xml文件名\n");
+                        string fileName = Console.ReadLine();
+                        try
+                        {
+                            obj.Import(fileName);
+                        }
+                        catch(Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                        Console.WriteLine("已导入");
+                        Console.ReadKey();
+                        break;
                     default:
-                        Console.WriteLine("请键入数字1—4！");
-                        flag = false;
+                        Console.WriteLine("请键入数字1—6！");
                         char.TryParse(Console.ReadLine(), out op);
                         break;
                 }
-            } while (!flag);
-            Console.Clear();
-            goto start;
+            } while (true);
         }
         public static void addingOrderUI(List<Goods> shopgoods, OrderService obj)
         {
             Console.Clear();
 
-            Console.WriteLine("请输入客户名:");      
+            Console.WriteLine("请输入客户名:");      //设置客户名
             string cname = Console.ReadLine();
             Customer customer = new Customer(cname);
 
@@ -65,7 +86,7 @@ namespace Homework5
             Order newOrder = new Order(id,customer);
 
             Console.WriteLine("--订单添加界面--");
-            Console.WriteLine("以下商品可供选择~");
+            Console.WriteLine("以下商品可供选择~");                  //显示可选商品
             foreach(Goods x in shopgoods)
             {
                 Console.WriteLine(shopgoods.IndexOf(x)+":"+x);
@@ -76,7 +97,7 @@ namespace Homework5
             {
             F:  Console.WriteLine("请分别输入商品编号和数量(输入非数字返回）");
                 string guestInput = Console.ReadLine();
-                string[] words = guestInput.Split(' ');         //分别获取输入的数字
+                string[] words = guestInput.Split(' ');               //分别获取输入的数字
                 int[] input = new int[2];
                 try
                 { 
@@ -120,7 +141,7 @@ namespace Homework5
             Console.WriteLine(newOrder);
             Console.ReadKey();
             Console.Clear();
-            UI.startMenu(shopgoods, obj);
+            return;
         
         }
         public static void deleteOrderUI(List<Goods> shopgoods, OrderService obj)
@@ -158,6 +179,7 @@ namespace Homework5
             foreach (Order x in obj.orderList)
             {
                 Console.WriteLine(x);
+                Console.WriteLine("---");
             }
             Console.WriteLine("请输入将要修改订单号(输入非数字返回)");
             int id;

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace Homework5
 {
-    class Customer
+    [Serializable]
+    public class Customer
     {
-        private string name;
+        public string name;
         public string Name { get { return name; } }
+
+        public Customer() { }
         public Customer(string name)
         {
             this.name = name;
@@ -22,6 +25,10 @@ namespace Homework5
         {
             Customer m = obj as Customer;
             return m.Name == Name;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }
