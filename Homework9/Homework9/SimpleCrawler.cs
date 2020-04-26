@@ -11,66 +11,131 @@ using System.Threading.Tasks;
 /*（1）只爬取起始网站上的网页 
 （2）只有当爬取的是html文本时，才解析并爬取下一级URL。
 （3）相对地址转成绝对地址进行爬取。
-（4）尝试使用Winform来配置初始URL，启动爬虫，显示已经爬取的URL和错误的URL信息。*/ 
+（4）尝试使用Winform来配置初始URL，启动爬虫，显示已经爬取的URL和错误的URL信息。*/
 
-namespace SimpleCrawler {
-  class SimpleCrawler {
-    private Hashtable urls = new Hashtable();
-    private int count = 0;
+namespace Homework9
+{
+    class Crawler
+    {
+        public event Action<Crawler, string, string> PageDownloaded;
 
-    static void Main(string[] args) {
-      SimpleCrawler myCrawler = new SimpleCrawler();
-      string startUrl = "http://www.cnblogs.com/dstang2000/";
-      if (args.Length >= 1) startUrl = args[0];
-      myCrawler.urls.Add(startUrl, false);//加入初始页面
-      new Thread(myCrawler.Crawl).Start();
-    }
+        //所有已下载和待下载URL，key是URL，value表示是否下载成功
+        private Dictionary<string, bool> urls = new Dictionary<string, bool>();
 
-    private void Crawl() {
-      Console.WriteLine("开始爬行了.... ");
-      while (true) {
-        string current = null;
-        foreach (string url in urls.Keys) {
+        //待下载队列
+        private Queue<string> pending = new Queue<string>();
 
-          if ((bool)urls[url]) continue;
-          current = url;
+        //URL检测表达式，用于在HTML文本中查找URL
+        private readonly string urlDetectRegex = @"(href|HREF)\s*=\s*[""'](?<url>[^""'#>]+)[""']";
+
+        //URL解析表达式
+        public static readonly string urlParseRegex = @"^(?<site>https?://(?<host>[\w\d.]+)(:\d+)?($|/))([\w\d]+/)*(?<file>[^#?]*)";
+        public string HostFilter { get; set; } //主机过滤规则
+        public string FileFilter { get; set; } //文件过滤规则
+        public int MaxPage { get; set; } //最大下载数量
+        public string StartURL { get; set; } //起始网址
+        public Encoding HtmlEncoding { get; set; } //网页编码
+        public Dictionary<string, bool> DownloadedPages { get { return urls; } }
+
+        public Crawler()
+        {
+            MaxPage = 100;
+            HtmlEncoding = Encoding.UTF8;
         }
 
-        if (current == null || count > 10) break;
-        Console.WriteLine("爬行" + current + "页面!");
-        string html = DownLoad(current); // 下载
-        urls[current] = true;
-        count++;
-        Parse(html);//解析,并加入新的链接
-        Console.WriteLine("爬行结束");
+        public void Start()
+        {
+            urls.Clear();
+            pending.Clear();
+            pending.Enqueue(StartURL);
 
-      }
+            while (urls.Count < MaxPage && pending.Count > 0)
+            {
+                string url = pending.Dequeue();
+                try
+                {
+                    string html = DownLoad(url);
+                    urls[url] = true;
+                    PageDownloaded(this, url, "success");
+                    Parse(html, url);//解析,并加入新的链接
+                }
+                catch (Exception ex)
+                {
+                    PageDownloaded(this, url, "  Error:" + ex.Message);
+                }
+            }
+        }
+
+        private string DownLoad(string url)
+        {
+            WebClient webClient = new WebClient();
+            webClient.Encoding = Encoding.UTF8;
+            string html = webClient.DownloadString(url);
+            string fileName = urls.Count.ToString();
+            File.WriteAllText(fileName, html, Encoding.UTF8);
+            return html;
+        }
+
+        private void Parse(string html, string pageUrl)
+        {
+
+            var matches = new Regex(urlDetectRegex).Matches(html);
+            foreach (Match match in matches)
+            {
+                string linkUrl = match.Groups["url"].Value;
+                if (linkUrl == null || linkUrl == "") continue;
+                linkUrl = FixUrl(linkUrl, pageUrl);//转绝对路径
+
+                //解析出host和file两个部分，进行过滤
+                Match linkUrlMatch = Regex.Match(linkUrl, urlParseRegex);
+                string host = linkUrlMatch.Groups["host"].Value;
+                string file = linkUrlMatch.Groups["file"].Value;
+                if (file == "") file = "index.html";
+
+                if (Regex.IsMatch(host, HostFilter) && Regex.IsMatch(file, FileFilter)
+                  && !urls.ContainsKey(linkUrl))
+                {
+                    pending.Enqueue(linkUrl);
+                    urls.Add(linkUrl, false);
+                }
+            }
+        }
+
+
+        //将相对路径转为绝对路径
+        static private string FixUrl(string url, string baseUrl)
+        {
+            if (url.Contains("://"))
+            {
+                return url;
+            }
+            if (url.StartsWith("//"))
+            {
+                return "http:" + url;
+            }
+            if (url.StartsWith("/"))
+            {
+                Match urlMatch = Regex.Match(baseUrl, urlParseRegex);
+                String site = urlMatch.Groups["site"].Value;
+                return site.EndsWith("/") ? site + url.Substring(1) : site + url;
+            }
+
+            if (url.StartsWith("../"))
+            {
+                url = url.Substring(3);
+                int idx = baseUrl.LastIndexOf('/');
+                return FixUrl(url, baseUrl.Substring(0, idx));
+            }
+
+            if (url.StartsWith("./"))
+            {
+                return FixUrl(url.Substring(2), baseUrl);
+            }
+
+            int end = baseUrl.LastIndexOf("/");
+            return baseUrl.Substring(0, end) + "/" + url;
+        }
     }
 
-    public string DownLoad(string url) {
-      try {
-        WebClient webClient = new WebClient();
-        webClient.Encoding = Encoding.UTF8;
-        string html = webClient.DownloadString(url);
-        string fileName = count.ToString();
-        File.WriteAllText(fileName, html, Encoding.UTF8);
-        return html;
-      }
-      catch (Exception ex) {
-        Console.WriteLine(ex.Message);
-        return "";
-      }
-    }
 
-    private void Parse(string html) {
-      string strRef = @"(href|HREF)[]*=[]*[""'][^""'#>]+[""']";
-      MatchCollection matches = new Regex(strRef).Matches(html);
-      foreach (Match match in matches) {
-        strRef = match.Value.Substring(match.Value.IndexOf('=') + 1)
-                  .Trim('"', '\"', '#', '>');
-        if (strRef.Length == 0) continue;
-        if (urls[strRef] == null) urls[strRef] = false;
-      }
-    }
-  }
 }
