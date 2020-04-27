@@ -48,8 +48,8 @@ namespace Homework9
             urls.Clear();
             pending.Clear();
             pending.Enqueue(StartURL);
-
-            while (urls.Count < MaxPage && pending.Count > 0)
+            int count = 0;
+            while (count < MaxPage && pending.Count > 0)
             {
                 string url = pending.Dequeue();
                 try
@@ -63,6 +63,7 @@ namespace Homework9
                 {
                     PageDownloaded(this, url, "  Error:" + ex.Message);
                 }
+                count++;
             }
         }
 
