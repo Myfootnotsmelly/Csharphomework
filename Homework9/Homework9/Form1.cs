@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Text.RegularExpressions;
 
-namespace Homework9
+namespace Homework10
 {
     public partial class Form1 : Form
     {
@@ -42,7 +42,7 @@ namespace Homework9
             thread = new Thread(crawler.Start);
             thread.Start();
         }
-        private void Crawler_PageDownloaded(Crawler crawler, string url, string info)
+        private void Crawler_PageDownloaded(Crawler crawler, string url)
         {
             var pageInfo = new {  URL = url};
             Action action = () => { resultBindingSource.Add(pageInfo); };

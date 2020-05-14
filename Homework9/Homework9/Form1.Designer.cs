@@ -1,4 +1,4 @@
-﻿namespace Homework9
+﻿namespace Homework10
 {
     partial class Form1
     {

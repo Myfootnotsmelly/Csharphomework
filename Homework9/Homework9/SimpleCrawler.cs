@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,22 +9,19 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-/*（1）只爬取起始网站上的网页 
-（2）只有当爬取的是html文本时，才解析并爬取下一级URL。
-（3）相对地址转成绝对地址进行爬取。
-（4）尝试使用Winform来配置初始URL，启动爬虫，显示已经爬取的URL和错误的URL信息。*/
+//将上次作业的爬虫程序，使用并行处理进行优化，实现更快速的网页爬取
 
-namespace Homework9
+namespace Homework10
 {
     class Crawler
     {
-        public event Action<Crawler, string, string> PageDownloaded;
+        public event Action<Crawler, string> PageDownloaded;
 
         //所有已下载和待下载URL，key是URL，value表示是否下载成功
-        private Dictionary<string, bool> urls = new Dictionary<string, bool>();
+        private ConcurrentDictionary<string, bool> urls = new ConcurrentDictionary<string, bool>();
 
         //待下载队列
-        private Queue<string> pending = new Queue<string>();
+        private ConcurrentQueue<string> pending = new ConcurrentQueue<string>();
 
         //URL检测表达式，用于在HTML文本中查找URL
         private readonly string urlDetectRegex = @"(href|HREF)\s*=\s*[""'](?<url>[^""'#>]+)[""']";
@@ -35,7 +33,6 @@ namespace Homework9
         public int MaxPage { get; set; } //最大下载数量
         public string StartURL { get; set; } //起始网址
         public Encoding HtmlEncoding { get; set; } //网页编码
-        public Dictionary<string, bool> DownloadedPages { get { return urls; } }
 
         public Crawler()
         {
@@ -46,27 +43,57 @@ namespace Homework9
         public void Start()
         {
             urls.Clear();
-            pending.Clear();
             pending.Enqueue(StartURL);
-            int count = 0;
+
+            List<Task> tasks = new List<Task>();
+            int count = 0;//已完成任务数
+            PageDownloaded += (crawler,someString) => { count++; };
+
+            string url;
             while (count < MaxPage && pending.Count > 0)
             {
-                string url = pending.Dequeue();
-                try
+                if (!pending.TryDequeue(out url))
+                {
+                    if (count < tasks.Count)
+                        continue;
+                    else
+                        break;//所有任务都完成，队列无url
+                }
+                Task task = Task.Run(() => DownloadAndParse(url));
+                tasks.Add(task);
+
+                /*try
                 {
                     string html = DownLoad(url);
-                    urls[url] = true;
-                    PageDownloaded(this, url, "success");
+                    urls[url] = true;//该语句可以向字典里加入新项  ，相当于urls.add
+                    PageDownloaded(this, url);
                     Parse(html, url);//解析,并加入新的链接
                 }
-                catch (Exception ex)
+                catch 
                 {
-                    PageDownloaded(this, url, "  Error:" + ex.Message);
+                    PageDownloaded(this, url);                    
                 }
-                count++;
+                count++;*/
+
+                Task.WaitAll(tasks.ToArray());
             }
         }
 
+
+        private void DownloadAndParse(string url)
+        {
+            try
+            {
+                string html = DownLoad(url);
+                urls[url] = true;
+                Parse(html, url);//解析,并加入新的链接
+                PageDownloaded(this,url);
+            }
+            catch 
+            {
+                PageDownloaded(this,url+"   but failed");
+            }
+        }
         private string DownLoad(string url)
         {
             WebClient webClient = new WebClient();
@@ -93,11 +120,12 @@ namespace Homework9
                 string file = linkUrlMatch.Groups["file"].Value;
                 if (file == "") file = "index.html";
 
+
                 if (Regex.IsMatch(host, HostFilter) && Regex.IsMatch(file, FileFilter)
                   && !urls.ContainsKey(linkUrl))
                 {
                     pending.Enqueue(linkUrl);
-                    urls.Add(linkUrl, false);
+                    urls.TryAdd(linkUrl, false);
                 }
             }
         }
@@ -137,6 +165,6 @@ namespace Homework9
             return baseUrl.Substring(0, end) + "/" + url;
         }
     }
-
+    
 
 }
