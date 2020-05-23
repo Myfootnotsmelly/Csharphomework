@@ -14,9 +14,9 @@ namespace Homework11
     {
         private OrderItem currentOI;
         public OrderItem CurrentOI { get { return currentOI; }set { currentOI = value; } }
-        public List<Goods> shopgoods = new List<Goods> { new Goods("fish", 10),
-                                                  new Goods("gun", 100),
-                                                  new Goods("wine", 15) };
+        public List<Goods> shopgoods = new List<Goods> { new Goods(goodstype.fish, 10),
+                                                  new Goods(goodstype.gun, 100),
+                                                  new Goods(goodstype.wine, 15) };
         public frmAddOI()
         {
             InitializeComponent();
@@ -28,7 +28,7 @@ namespace Homework11
 
         private void frmAddOI_Load(object sender, EventArgs e)
         {
-            string[] goods = { "fish", "gun", "wine" };
+            goodstype[] goods = { goodstype.fish, goodstype.gun, goodstype.wine };
             cboGoodsType.DataSource = goods;
         }
 
@@ -46,13 +46,8 @@ namespace Homework11
 
         private void cboGoodsType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CurrentOI.Goods = shopgoods.Find(x => x.Type == cboGoodsType.SelectedItem.ToString());
+            currentOI.thisgoods = shopgoods.Find(x => x.type == (goodstype)cboGoodsType.SelectedItem);
             // cboGoodsType.DataBindings.Add("SelectedItem", this, "currentOI.thisgoods");
-        }
-
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            
         }
     }
 }

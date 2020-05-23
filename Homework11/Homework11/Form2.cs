@@ -14,11 +14,7 @@ namespace Homework11
     {
         private Order currentOrder;
         public Order CurrentOrder { get{ return currentOrder; }set { currentOrder = value; } }
-        public string txtContent
-        {
-            get { return CurrentOrder.Customer.Name; }
-            set { CurrentOrder.Customer.Name=value; }
-        }
+        public string txtContent { get { return currentOrder.Cname; } set { currentOrder.Cname = value; } }
 
         public frmAddOrder()
         {
@@ -28,16 +24,16 @@ namespace Homework11
         {
             CurrentOrder = currentOrder;
             OrderAddingbindingSource.DataSource = currentOrder.orderItemList;
-            /*foreach (int x in new int[] { 0, 2, 3 })                        //只可修改数量   
-                dgvOIofAddingOrder.Columns[x].ReadOnly = true;*/
+            foreach (int x in new int[] { 0, 2, 3 })                        //只可修改数量   
+                dgvOIofAddingOrder.Columns[x].ReadOnly = true;
             txtCname.DataBindings.Add("Text", this, "txtContent");
             if(ifNewOrder)                                                  //是新建订单，初始化订单号
             {
                 do
                 {
                     Random random = new Random();
-                    currentOrder.OrderId = random.Next(0, 10000);
-                } while (frmMain_parameter.orderlist.Exists(x => x.OrderId == currentOrder.OrderId));
+                    currentOrder.id = random.Next(0, 10000);
+                } while (frmMain_parameter.orderlist.Exists(x => x.Id == currentOrder.id));
             }
             else                                                             //是待修改订单
             {
@@ -50,8 +46,6 @@ namespace Homework11
             frmAddOI form3 = new frmAddOI(new OrderItem());
             if (form3.ShowDialog() == DialogResult.OK)
             {
-                form3.CurrentOI.OrderId = CurrentOrder.OrderId;
-                form3.CurrentOI.GoodsId = form3.CurrentOI.Goods.ID;
                 currentOrder.addOrderItem(form3.CurrentOI);
                 OrderAddingbindingSource.DataSource = currentOrder.orderItemList;
                 OrderAddingbindingSource.ResetBindings(false);
@@ -78,8 +72,6 @@ namespace Homework11
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            CurrentOrder.CustomerId = CurrentOrder.Customer.ID;
-
         }
     }
 }

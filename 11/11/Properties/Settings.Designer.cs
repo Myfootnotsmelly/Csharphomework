@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Homework11.Properties
+namespace _11.Properties
 {
 
 

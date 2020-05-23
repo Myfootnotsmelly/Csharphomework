@@ -31,11 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.dgvOIofAddingOrder = new System.Windows.Forms.DataGridView();
-            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.goodsIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.goodsTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.goodsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.thisgoodsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.quantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.goodPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.itempriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -75,11 +71,7 @@
             this.dgvOIofAddingOrder.AutoGenerateColumns = false;
             this.dgvOIofAddingOrder.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvOIofAddingOrder.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.idDataGridViewTextBoxColumn,
-            this.goodsIdDataGridViewTextBoxColumn,
-            this.goodsTypeDataGridViewTextBoxColumn,
-            this.goodsDataGridViewTextBoxColumn,
-            this.orderIdDataGridViewTextBoxColumn,
+            this.thisgoodsDataGridViewTextBoxColumn,
             this.quantityDataGridViewTextBoxColumn,
             this.goodPriceDataGridViewTextBoxColumn,
             this.itempriceDataGridViewTextBoxColumn});
@@ -91,36 +83,11 @@
             this.dgvOIofAddingOrder.Size = new System.Drawing.Size(448, 431);
             this.dgvOIofAddingOrder.TabIndex = 0;
             // 
-            // idDataGridViewTextBoxColumn
+            // thisgoodsDataGridViewTextBoxColumn
             // 
-            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
-            this.idDataGridViewTextBoxColumn.HeaderText = "Id";
-            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
-            // 
-            // goodsIdDataGridViewTextBoxColumn
-            // 
-            this.goodsIdDataGridViewTextBoxColumn.DataPropertyName = "GoodsId";
-            this.goodsIdDataGridViewTextBoxColumn.HeaderText = "GoodsId";
-            this.goodsIdDataGridViewTextBoxColumn.Name = "goodsIdDataGridViewTextBoxColumn";
-            // 
-            // goodsTypeDataGridViewTextBoxColumn
-            // 
-            this.goodsTypeDataGridViewTextBoxColumn.DataPropertyName = "GoodsType";
-            this.goodsTypeDataGridViewTextBoxColumn.HeaderText = "GoodsType";
-            this.goodsTypeDataGridViewTextBoxColumn.Name = "goodsTypeDataGridViewTextBoxColumn";
-            this.goodsTypeDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // goodsDataGridViewTextBoxColumn
-            // 
-            this.goodsDataGridViewTextBoxColumn.DataPropertyName = "Goods";
-            this.goodsDataGridViewTextBoxColumn.HeaderText = "Goods";
-            this.goodsDataGridViewTextBoxColumn.Name = "goodsDataGridViewTextBoxColumn";
-            // 
-            // orderIdDataGridViewTextBoxColumn
-            // 
-            this.orderIdDataGridViewTextBoxColumn.DataPropertyName = "OrderId";
-            this.orderIdDataGridViewTextBoxColumn.HeaderText = "OrderId";
-            this.orderIdDataGridViewTextBoxColumn.Name = "orderIdDataGridViewTextBoxColumn";
+            this.thisgoodsDataGridViewTextBoxColumn.DataPropertyName = "thisgoods";
+            this.thisgoodsDataGridViewTextBoxColumn.HeaderText = "thisgoods";
+            this.thisgoodsDataGridViewTextBoxColumn.Name = "thisgoodsDataGridViewTextBoxColumn";
             // 
             // quantityDataGridViewTextBoxColumn
             // 
@@ -140,7 +107,6 @@
             this.itempriceDataGridViewTextBoxColumn.DataPropertyName = "Itemprice";
             this.itempriceDataGridViewTextBoxColumn.HeaderText = "Itemprice";
             this.itempriceDataGridViewTextBoxColumn.Name = "itempriceDataGridViewTextBoxColumn";
-            this.itempriceDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // OrderAddingbindingSource
             // 
@@ -281,10 +247,5 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.TextBox txtCname;
-        private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn goodsIdDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn goodsTypeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn goodsDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn orderIdDataGridViewTextBoxColumn;
     }
 }

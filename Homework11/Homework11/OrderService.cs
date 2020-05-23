@@ -14,8 +14,8 @@ namespace Homework11
     public class OrderService
     {
         //public List<Order> orderList=new List<Order>();
-        // public List<Order> OrderList { get { return orderList; } }
-        public OrderService() { }
+       // public List<Order> OrderList { get { return orderList; } }
+        public OrderService() {}
         public static List<Order> GetAllOrders()
         {
             using (var db = new OrderContext())
@@ -26,7 +26,7 @@ namespace Homework11
         private static IQueryable<Order> AllOrders(OrderContext db)
         {
             return db.Orders.Include(o => o.orderItemList.Select(i => i.Goods))
-                      .Include(x=>x.Customer);
+                      .Include("Customer");
 
         }
 
@@ -40,18 +40,18 @@ namespace Homework11
                     db.SaveChanges();
                 }
             }
-            catch(Exception ex)
+            catch
             {
-                throw new Exception(ex.Message);
+                throw new Exception("已存在相同订单！");
             }
         }
-        /* public void deleteOrder(int id)             //按订单号删除订单
-         {
-             if (orderList[orderList.FindIndex(x=>x.OrderId==id)] != null)
-                 orderList.Remove(orderList.Find(x => x.OrderId == id));
-             else
-                 throw new Exception("该订单不存在！");
-         }*/
+       /* public void deleteOrder(int id)             //按订单号删除订单
+        {
+            if (orderList[orderList.FindIndex(x=>x.OrderId==id)] != null)
+                orderList.Remove(orderList.Find(x => x.OrderId == id));
+            else
+                throw new Exception("该订单不存在！");
+        }*/
         public static void deleteOrder(int id)
         {
             try
@@ -63,23 +63,23 @@ namespace Homework11
                     db.SaveChanges();
                 }
             }
-            catch(Exception ex)
+            catch 
             {
-                throw new Exception(ex.Message);
+                throw new ApplicationException("删除订单错误!");
             }
         }
-        /* public void modifyOrder(Order toModify,int id)  //修改订单
-         {
-             if (orderList[orderList.FindIndex(x => x.OrderId == id)] != null)
-                 if (!orderList[orderList.FindIndex(x => x.OrderId == id)].Equals(toModify))
-                 {
-                     int index = orderList.FindIndex(x => x.OrderId == id);
-                     deleteOrder(id);
-                     orderList.Insert(index, toModify);
-                 }
-                 else
-                     throw new Exception("已存在相同订单！");
-         }*/
+       /* public void modifyOrder(Order toModify,int id)  //修改订单
+        {
+            if (orderList[orderList.FindIndex(x => x.OrderId == id)] != null)
+                if (!orderList[orderList.FindIndex(x => x.OrderId == id)].Equals(toModify))
+                {
+                    int index = orderList.FindIndex(x => x.OrderId == id);
+                    deleteOrder(id);
+                    orderList.Insert(index, toModify);
+                }
+                else
+                    throw new Exception("已存在相同订单！");
+        }*/
 
         public static void modifyOrder(Order newOrder)
         {
@@ -116,13 +116,13 @@ namespace Homework11
                         select s;
             return query.ToList();
         }*/
-        /*public List<Order> inquiryOrder(string string )      //按商品名称查询
+        /*public List<Order> inquiryOrder(goodstype goodstype )      //按商品名称查询
         {
-            var query = orderList.Where(x => x.Items.Exists(y => y.GoodsType == string))
+            var query = orderList.Where(x => x.Items.Exists(y => y.GoodsType == goodstype))
                                  .OrderByDescending(x => x.Totalprice);                 
             return query.ToList();
         }*/
-        public static Order inquiryOrder(int id)                      //按订单号查询
+        public Order inquiryOrder(int id)                      //按订单号查询
         {
             using (var db = new OrderContext())
             {
@@ -131,21 +131,21 @@ namespace Homework11
 
             }
         }
-        public static List<Order> inquiryOrder(string cname)          //按客户名查询
-        {
+        public List<Order> inquiryOrder(string cname)          //按客户名查询
+       {
             using (var db = new OrderContext())
             {
                 var query = db.Orders.Where(o => o.Cname == cname);
                 return query.ToList();
             }
-        }
+       }
 
-        public static List<Order> inquiryOrderByType(string type)
+        public static List<Order> inquiryOrder(goodstype goodstype)
         {
             using (var db = new OrderContext())
             {
                 var query = db.Orders
-                  .Where(o => o.orderItemList.Exists(y => y.GoodsType == type));
+                  .Where(o => o.orderItemList.Exists(y => y.GoodsType == goodstype));
                 return query.ToList();
             }
         }
@@ -156,7 +156,7 @@ namespace Homework11
         {
             orderList.Sort((o1, o2) => o1.OrderId - o2.OrderId);
         }*/
-        public static void Export(string filename)                                  //序列化
+        public void Export(string filename)                                  //序列化
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Order>));
             using (FileStream fs = new FileStream(filename, FileMode.Create))
@@ -167,8 +167,8 @@ namespace Homework11
                 }
             }
 
-        }
-        public static  void Import(string fileName)                   //反序列化
+         }
+        public void Import(string fileName)                   //反序列化
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Order>));
             using (FileStream fs = new FileStream($"{fileName}", FileMode.Open))

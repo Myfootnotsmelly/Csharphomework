@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,37 +8,45 @@ using System.Threading.Tasks;
 using System.Xml;
 
 
-namespace Homework8
+namespace Homework11
 {
     //订单明细类
     [Serializable]
     public class OrderItem
     {
-        public Goods goods;     //货物
+        public string Id { get; set; }
+
+        public string GoodsId { get; set; }
+        public string GoodsType { get { return Goods.Type; } /*set { Goods.Type = value; }*/ }
+        [ForeignKey("GoodsId")]
+        public Goods Goods { get; set; }
+
+        public int OrderId { get; set; }
+
         public int quantity;    //货物数量
-        public double itemprice;//订单中每项价格
+        public int Quantity { get { return quantity; } set { quantity = value; } }
+        public double GoodPrice { get { return Goods == null ? 0 : Goods.Price; } set { } }
+        public double Itemprice { get { return Goods == null ? 0 : Quantity * GoodPrice; } set { } }
 
-        public Goods thisgoods { get { return goods;}set { goods = value; } }
-        public int Quantity { get { return quantity; }set { quantity = value; Itemprice = quantity * thisgoods.Price; } }
-        public double GoodPrice { get { return goods.Price; } }
-        public double Itemprice { get { return itemprice; } set { itemprice = value; } }
-
-        public OrderItem() {}
-        public OrderItem(Goods goods,int quantity)
+        public OrderItem()
         {
-            this.goods = goods;
+            Id = Guid.NewGuid().ToString();
+        }
+        public OrderItem(Goods goods, int quantity) : this()
+        {
+            this.Goods = goods;
             this.quantity = quantity;
-            this.itemprice = quantity * goods.Price;
+           // this.Itemprice = quantity * goods.Price;
         }
 
-        public override bool Equals(object obj)
+       /* public override bool Equals(object obj)
         {
             OrderItem m = obj as OrderItem;
-            return m != null && m.goods.Equals(goods) && m.quantity == quantity && m.itemprice == itemprice ;
-        }
+            return m != null && m.Goods.Equals(Goods) && m.quantity == quantity && m.Itemprice == Itemprice;
+        }*/
         public override string ToString()
         {
-            string result = "商品:" + goods+ "\n"+ "购买数量:" + quantity + ",     该项价格为" + itemprice;
+            string result = "商品:" + Goods + "\n" + "购买数量:" + quantity + ",     该项价格为" + Itemprice;
             return result;
         }
         public override int GetHashCode()

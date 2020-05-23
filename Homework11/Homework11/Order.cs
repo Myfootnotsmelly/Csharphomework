@@ -29,10 +29,9 @@ namespace Homework11
         public Order()
         {
             Customer = new Customer();
-            orderItemList = new List<OrderItem>();
         }
 
-        public Order(int id, Customer customer):this()
+        public Order(int id,Customer customer)
         {
             this.OrderId = id;
             this.Customer = customer;
@@ -59,34 +58,34 @@ namespace Homework11
             if (orderItemList.Contains(newOI))
                 throw new ApplicationException("添加错误：订单项已经存在!");
             orderItemList.Add(newOI);
-            updateTotalprice();
+            updateTotalprice(); 
         }
         public void deleteOrderItem(OrderItem todelOI)
         {
             orderItemList.Remove(todelOI);
             updateTotalprice();
         }
-        /*
-                public void exportOrderItem()
-                {
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<OrderItem>));
-                    using (FileStream fs = new FileStream("order.xml", FileMode.Create))
-                    {
-                        xmlSerializer.Serialize(fs, orderItemlist);
-                    }
-                }
+/*
+        public void exportOrderItem()
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<OrderItem>));
+            using (FileStream fs = new FileStream("order.xml", FileMode.Create))
+            {
+                xmlSerializer.Serialize(fs, orderItemlist);
+            }
+        }
 
 
-               /* public void deleteOrderItem(int index)//在订单中删除某项
-                {
-                    if (orderItemlist[index] != null)
-                    {
-                        orderItemlist.RemoveAt(index);
-                        updateTotalprice();
-                    }
-                    else
-                        throw new Exception("该订单不存在该项明细!");
-                }*/
+       /* public void deleteOrderItem(int index)//在订单中删除某项
+        {
+            if (orderItemlist[index] != null)
+            {
+                orderItemlist.RemoveAt(index);
+                updateTotalprice();
+            }
+            else
+                throw new Exception("该订单不存在该项明细!");
+        }*/
 
 
 
@@ -95,12 +94,12 @@ namespace Homework11
         public override bool Equals(object obj)
         {
             Order m = obj as Order;
-            bool orderItemlist_equal = true;
-            for (int i = 0; i < m.orderItemList.Count; i = i + 1)
+            bool orderItemlist_equal=true;
+            for(int i=0;i<m.orderItemList.Count;i=i+1)
             {
-                orderItemlist_equal = orderItemlist_equal && (m.orderItemList[i].Equals(orderItemList[i]));
+                orderItemlist_equal = orderItemlist_equal && (m.orderItemList[i].Equals( orderItemList[i]));
             }
-            return m != null && m.Customer.Equals(Customer) && orderItemlist_equal && m.Totalprice == Totalprice;
+            return m != null && m.Customer.Equals (Customer) && orderItemlist_equal && m.Totalprice == Totalprice;
         }
         public override string ToString()
         {
