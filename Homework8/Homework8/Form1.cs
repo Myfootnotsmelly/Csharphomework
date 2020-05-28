@@ -14,7 +14,7 @@ namespace Homework11
     {
         OrderService service = new OrderService();
         public string queryKeyWord { get; set; }
-        public List<Goods> shopgoods = new List<Goods> { new Goods("fish", 10),
+        public static List<Goods> shopgoods = new List<Goods> { new Goods("fish", 10),
                                                   new Goods("gun", 100),
                                                   new Goods("wine", 15) };
         public frmMain()
@@ -99,7 +99,7 @@ namespace Homework11
             frmAddOrder form2 = new frmAddOrder(new Order(),true);
             if (form2.ShowDialog() == DialogResult.OK)
             {
-                form2.CurrentOrder.CustomerId = form2.CurrentOrder.Customer.ID;
+                //form2.CurrentOrder.CustomerId = form2.CurrentOrder.Customer.ID;
                 try
                 {
                     OrderService.addOrder(form2.CurrentOrder);

@@ -14,9 +14,9 @@ namespace Homework11
     {
         private OrderItem currentOI;
         public OrderItem CurrentOI { get { return currentOI; }set { currentOI = value; } }
-        public List<Goods> shopgoods = new List<Goods> { new Goods("fish", 10),
+      /*  public List<Goods> shopgoods = new List<Goods> { new Goods("fish", 10),
                                                   new Goods("gun", 100),
-                                                  new Goods("wine", 15) };
+                                                  new Goods("wine", 15) };*/
         public frmAddOI()
         {
             InitializeComponent();
@@ -46,7 +46,7 @@ namespace Homework11
 
         private void cboGoodsType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CurrentOI.Goods = shopgoods.Find(x => x.Type == cboGoodsType.SelectedItem.ToString());
+            CurrentOI.Goods = frmMain.shopgoods.Find(x => x.Type == cboGoodsType.SelectedItem.ToString());
             // cboGoodsType.DataBindings.Add("SelectedItem", this, "currentOI.thisgoods");
         }
 

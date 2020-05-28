@@ -71,6 +71,7 @@ namespace Homework11
         /* public void modifyOrder(Order toModify,int id)  //修改订单
          {
              if (orderList[orderList.FindIndex(x => x.OrderId == id)] != null)
+
                  if (!orderList[orderList.FindIndex(x => x.OrderId == id)].Equals(toModify))
                  {
                      int index = orderList.FindIndex(x => x.OrderId == id);
