@@ -12,26 +12,25 @@ namespace Homework11
     [Serializable]
     public class Customer
     {
-        public string ID { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
 
-        public Customer()
+        public Customer() {}
+       
+        public Customer(string name) 
         {
-            ID = Guid.NewGuid().ToString();
-        }
-        public Customer(string name) : this()
-        {
-            this.Name = name;
+            Id = Guid.NewGuid().ToString();
+            Name = name;
         }
         public override string ToString()
         {
             return Name;
         }
-    /*    public override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
             Customer m = obj as Customer;
             return m.Name == Name;
-        }*/
+        }
         public override int GetHashCode()
         {
             return base.GetHashCode();

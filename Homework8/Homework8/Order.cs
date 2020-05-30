@@ -17,7 +17,7 @@ namespace Homework11
         public string CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }         //顾客 
-        public string Cname { get { return Customer.Name; } set { Customer.Name = value; } }//获得该订单所属顾客名
+        public string Cname { get { return   (Customer != null) ? Customer.Name : ""; } set { Customer.Name = value; } }//获得该订单所属顾客名
 
         public int OrderId { get; set; }               //订单号    
 
@@ -34,9 +34,9 @@ namespace Homework11
 
         public Order(int id, Customer customer):this()
         {
-            this.OrderId = id;
-            this.Customer = customer;
-            this.Totalprice = 0;
+            OrderId = id;
+            Customer = customer;
+            Totalprice = 0;
         }
 
         public void updateTotalprice()

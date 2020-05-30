@@ -16,8 +16,9 @@ namespace Homework11
         public Order CurrentOrder { get{ return currentOrder; }set { currentOrder = value; } }
         public string txtContent
         {
-            get { return CurrentOrder.Customer.Name; }
-            set { CurrentOrder.Customer.Name=value; }
+            // get { return CurrentOrder.Customer.Name; }
+            // set { CurrentOrder.Customer.Name=value; }
+            get;set;
         }
 
         public frmAddOrder()
@@ -78,7 +79,22 @@ namespace Homework11
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            CurrentOrder.CustomerId = CurrentOrder.Customer.ID;
+            try
+            {
+                Customer temp = new Customer(txtContent);
+                if (!CustomerService.Contain(temp))
+                    CurrentOrder.Customer = temp;
+                else
+                    CurrentOrder.Customer = CustomerService.GetCustomerByName(txtContent);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                CurrentOrder.CustomerId = CurrentOrder.Customer.Id;
+            }
 
         }
     }
